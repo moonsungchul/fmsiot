@@ -1,4 +1,4 @@
-package client_test
+package fmsiot
 
 import (
 	"fmt"
@@ -44,6 +44,15 @@ func TestExampleNewClient(t *testing.T) {
 		log.Printf("[%2d] %s: %s : %s\n", i, t.Format(time.Stamp), val, val2)
 	}
 
+	// Count Records
+	q = fmt.Sprintf("select count(*) from cpu")
+	res, err = queryDB(con, q, "telegraf")
+	if err != nil {
+		log.Fatal(err)
+	}
+	count := res[0].Series[0].Values[0][1]
+	log.Printf("Found a total of %v records \n", count)
+
 }
 
 func queryDB(clnt client.Client, cmd string, db string) (res []client.Result, err error) {
@@ -60,5 +69,4 @@ func queryDB(clnt client.Client, cmd string, db string) (res []client.Result, er
 		return res, err
 	}
 	return res, nil
-
 }
